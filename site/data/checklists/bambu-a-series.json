@@ -1,0 +1,422 @@
+{
+  "id": "bambu-a-series",
+  "category": "3d-printer",
+  "version": 1,
+  "title": "Bambu Lab A Series (A1 / A1 mini)",
+  "manufacturer": "Bambu Lab",
+  "description": "Bench repair checklist for the A1 and A1 mini, ordered from the most common faults (physical damage) to deeper diagnostics. Other Bambu models can use it too; items carry notes where the P, X and H series differ.",
+  "references": [
+    { "title": "Bambu Lab Wiki", "url": "https://wiki.bambulab.com/en/home" },
+    { "title": "A1 glossary of parts (Bambu Lab Wiki)", "url": "https://wiki.bambulab.com/en/a1/manual/glossary" },
+    { "title": "CPSC: A1 heatbed cable recall (2024)", "url": "https://www.cpsc.gov/Recalls/2024/Bambu-Lab-Recalls-A1-3D-Printers-Due-to-Electric-Shock-and-Fire-Hazards" }
+  ],
+  "safety": [
+    "Unplug mains power before opening covers, unplugging cables or touching wiring. Do not hot-plug the toolhead or heatbed cables.",
+    "The hotend and heatbed stay hot for several minutes after use. Let them cool before handling.",
+    "Use ESD precautions (grounded strap or touch bare metal) before handling the mainboard or toolhead board.",
+    "A1 only: check the heatbed cable recall status before powering a unit with a damaged or original-revision bed cable."
+  ],
+  "models": [
+    { "id": "a1", "name": "A1", "series": "A", "primary": true },
+    { "id": "a1-mini", "name": "A1 mini", "series": "A", "primary": true },
+    { "id": "p1p", "name": "P1P", "series": "P", "primary": false },
+    { "id": "p1s", "name": "P1S", "series": "P", "primary": false },
+    { "id": "p2s", "name": "P2S", "series": "P", "primary": false },
+    { "id": "x1c", "name": "X1 Carbon", "series": "X", "primary": false },
+    { "id": "x1e", "name": "X1E", "series": "X", "primary": false },
+    { "id": "x2d", "name": "X2D", "series": "X", "primary": false },
+    { "id": "h2s", "name": "H2S", "series": "H", "primary": false },
+    { "id": "h2d", "name": "H2D", "series": "H", "primary": false },
+    { "id": "h2c", "name": "H2C", "series": "H", "primary": false },
+    { "id": "other", "name": "Other / unknown model", "series": "?", "primary": false }
+  ],
+  "sections": [
+    {
+      "id": "intake",
+      "title": "1. Intake and visible physical damage",
+      "description": "The most common faults. Look before you power on.",
+      "items": [
+        {
+          "id": "intake.blob",
+          "title": "Filament blob on the hotend",
+          "check": "Look for a mass of filament encasing the nozzle, heater block, silicone sock or toolhead (\"blob of doom\").",
+          "signs": "Nozzle temperature errors, toolhead malfunction errors, fans not spinning.",
+          "fix": "Heat to soften and peel off carefully. Blobs often pull heater/thermistor wires, crack the toolhead board area or jam fans, so inspect those items closely afterwards.",
+          "tags": ["physical", "common"]
+        },
+        {
+          "id": "intake.cables",
+          "title": "Damaged, pinched or kinked cables",
+          "check": "Trace the heatbed cable, toolhead cable, AMS lite cable and power cord. Look for kinks, crushed sections, exposed copper, melted insulation or connectors pulled loose.",
+          "signs": "Intermittent heating, toolhead errors, AMS lite not detected.",
+          "fix": "Replace damaged cables rather than taping them. Check that cable clips and strain relief are present.",
+          "otherSeries": "P/X/H series route the toolhead cable through a chain or ribbon; check where it flexes at the toolhead and the rear of the frame.",
+          "tags": ["physical", "electrical", "common"]
+        },
+        {
+          "id": "intake.recall",
+          "title": "Heatbed cable recall status (A1)",
+          "check": "Read the serial on the rear QR sticker and check it against Bambu's A1 heatbed cable recall (2024). In the US notice, affected units have \"A\" as the 6th character of the serial. Confirm the updated heatbed and cable are fitted.",
+          "signs": "Bent, cracked or scorched heatbed cable near the bed or rear exit.",
+          "fix": "If the unit was never remedied, stop and route it through Bambu's recall program; do not repair the original cable.",
+          "appliesTo": ["a1"],
+          "tags": ["physical", "safety"]
+        },
+        {
+          "id": "intake.burn",
+          "title": "Burn marks, melted plastic or smell",
+          "check": "Inspect around the heatbed connector, power socket, PSU area, mainboard connectors and toolhead. Smell for burnt electronics.",
+          "fix": "Find the source before powering on. Replace any scorched connector, cable or board.",
+          "tags": ["physical", "safety"]
+        },
+        {
+          "id": "intake.frame",
+          "title": "Frame, base or gantry damage",
+          "check": "Look for cracked or bent frame parts, a twisted gantry, cracked base housing, loose or missing screws, and broken feet. Check that the printer sits flat.",
+          "signs": "Shipping or drop damage, layer shifts, rubbing noises.",
+          "fix": "Tighten or replace screws; replace cracked housings. A bent gantry or column usually needs the part replaced.",
+          "otherSeries": "Enclosed models (P1S, P2S, X1, H2): also check the door, glass panels, top lid and hinges.",
+          "tags": ["physical", "common"]
+        },
+        {
+          "id": "intake.covers",
+          "title": "Toolhead covers and housings",
+          "check": "Check the print head front cover, toolhead rear housing and filament cutter lever for cracks, missing clips or missing parts.",
+          "fix": "Replace cracked covers; a loose front cover can let the cutter lever or fans misbehave.",
+          "tags": ["physical"]
+        },
+        {
+          "id": "intake.debris",
+          "title": "Debris in motion paths",
+          "check": "Look for filament strings, purge waste, screws or dust on the rails, belts, pulleys, under the bed and in fan intakes.",
+          "fix": "Clean it out. Purge waste piling up behind the A1 can block the bed's travel.",
+          "tags": ["physical", "common"]
+        },
+        {
+          "id": "intake.screen",
+          "title": "Touchscreen and camera",
+          "check": "Check the touchscreen for cracks and dead spots, and the camera lens for damage.",
+          "fix": "Replace the touchscreen or camera module; reseat their cables first if the display is blank.",
+          "tags": ["physical"]
+        },
+        {
+          "id": "intake.parts",
+          "title": "Missing parts and accessories",
+          "check": "Build plate, spool holder, PTFE tubes, nozzle wiper, AMS lite parts and any screws noted in the ticket.",
+          "fix": "Note what came in so it goes back out. Record missing parts in the notes.",
+          "tags": ["intake"]
+        }
+      ]
+    },
+    {
+      "id": "motion",
+      "title": "2. Motion system",
+      "description": "Power off and move things by hand before running motors.",
+      "items": [
+        {
+          "id": "motion.manual",
+          "title": "Move each axis by hand (powered off)",
+          "check": "Slide the toolhead along X and the bed along Y, and check the Z travel. Feel for binding, grinding, notches or tight spots.",
+          "signs": "Layer shifts, homing failures, loud motor noise.",
+          "fix": "Find and clear the rough spot: debris, a damaged rail, a worn pulley or a loose belt.",
+          "tags": ["mechanical", "common"]
+        },
+        {
+          "id": "motion.belts",
+          "title": "Belts: wear and tension",
+          "check": "Inspect the X and Y belts (and the A1 Z belt) for fraying, cracked or missing teeth, and correct tension.",
+          "signs": "Ringing/ghosting, layer shifts, clicking.",
+          "fix": "Re-tension with the belt tensioner (A1 mini: Y-axis tensioner) or replace the belt.",
+          "otherSeries": "P1, X1 and H2 series are CoreXY: both main belts must be tensioned equally. Follow the model's belt tension procedure.",
+          "tags": ["mechanical", "common"]
+        },
+        {
+          "id": "motion.pulleys",
+          "title": "Motor pulleys and idlers",
+          "check": "Check that the motor pulley grub screws are tight and that idlers spin freely without wobble.",
+          "fix": "Tighten grub screws onto the motor shaft flat; replace worn pulleys (A1 mini has an X/Y-axis pulley spare).",
+          "tags": ["mechanical"]
+        },
+        {
+          "id": "motion.rails",
+          "title": "Linear rails and carriages",
+          "check": "Look for scoring, rust, dry or gummy grease, and play in the carriage blocks on the X, Y and Z rails.",
+          "fix": "Clean, then lubricate with the correct grease. Replace a rail or carriage with play or a rough spot.",
+          "otherSeries": "P1 and X1 series use carbon rods on X/Y: check them for cracks and clean them, but do not grease them.",
+          "tags": ["mechanical"]
+        },
+        {
+          "id": "motion.z",
+          "title": "Z axis: lead screws, Z belt and gantry level",
+          "check": "A1: both Z lead screws turn together (via the Z belt) and the gantry is level side to side. A1 mini: single column lead screw is clean and turns smoothly.",
+          "signs": "Z homing failed, first layer thicker on one side.",
+          "fix": "Clean and grease the lead screws; re-sync and re-tension the Z belt; level the gantry before calibration.",
+          "otherSeries": "Enclosed models raise and lower the bed on several lead screws linked by a belt underneath. Check that the bed is level and not tilted from a slipped belt.",
+          "tags": ["mechanical"]
+        },
+        {
+          "id": "motion.motors",
+          "title": "Stepper motors",
+          "check": "Listen for grinding or skipping when moving, check the motor connectors and feel for a bent shaft or loose mount.",
+          "signs": "Homing failures even with free mechanics.",
+          "fix": "Reseat the motor cable; swap in a known-good motor to confirm before replacing.",
+          "tags": ["mechanical", "electrical"]
+        }
+      ]
+    },
+    {
+      "id": "toolhead",
+      "title": "3. Toolhead and extrusion",
+      "items": [
+        {
+          "id": "toolhead.nozzle",
+          "title": "Nozzle: clog, wear, seating",
+          "check": "Check the nozzle tip for damage or wear, clear any clog, and confirm the quick-swap hotend is fully seated and clipped in.",
+          "signs": "Under-extrusion, clicking extruder, filament not coming out.",
+          "fix": "Cold pull or clear the clog; replace a worn or damaged hotend/nozzle. Abrasive filaments wear brass quickly.",
+          "otherSeries": "H2D and X2D have two nozzles: check both. H2C uses the Vortek hotend-swap system; check each hotend in the rack.",
+          "tags": ["extrusion", "common"]
+        },
+        {
+          "id": "toolhead.heater",
+          "title": "Hotend heater and thermistor",
+          "check": "Check the hotend heating assembly wires and connector for damage, then heat the nozzle and confirm it reaches temperature and reads steadily.",
+          "signs": "\"Nozzle temperature is abnormal\", heating failed, temperature jumping.",
+          "fix": "Replace the hotend heating assembly. Check wires that were pulled during blob removal.",
+          "tags": ["extrusion", "electrical", "common"]
+        },
+        {
+          "id": "toolhead.fans",
+          "title": "Hotend fan and part cooling fan",
+          "check": "Both fans spin, are quiet, have no broken blades and are not clogged with filament.",
+          "signs": "Heat creep clogs, fan speed errors, droopy overhangs.",
+          "fix": "Clean or replace the fan; reseat the fan connector on the toolhead board.",
+          "otherSeries": "Enclosed models also have chamber/auxiliary and exhaust fans; check those too.",
+          "tags": ["extrusion", "electrical"]
+        },
+        {
+          "id": "toolhead.extruder",
+          "title": "Extruder gears and idler",
+          "check": "Look for worn gear teeth, packed filament dust in the gears, and correct idler lever tension.",
+          "signs": "Grinding, chewed filament, inconsistent extrusion.",
+          "fix": "Clean the gears; replace the extruder gear assembly or the extruder unit if worn.",
+          "tags": ["extrusion", "common"]
+        },
+        {
+          "id": "toolhead.cutter",
+          "title": "Filament cutter",
+          "check": "The cutter lever moves freely and springs back, and the blade cuts cleanly.",
+          "signs": "Filament change failures, filament not retracting.",
+          "fix": "Clean and free the lever; replace a dull blade or broken lever.",
+          "tags": ["extrusion"]
+        },
+        {
+          "id": "toolhead.sensors",
+          "title": "Toolhead sensors (filament, nozzle sensing)",
+          "check": "Confirm the filament sensor triggers when filament is inserted/removed, and that there are no extruder sensor errors on screen.",
+          "signs": "\"Eddy current sensor signal is abnormal\", filament runout errors with filament present.",
+          "fix": "Reseat cables; replace the filament sensor or extruder unit. These errors can also come from the toolhead board, cable or a Z motor, so check those before replacing parts.",
+          "otherSeries": "X1 series also has a lidar module on the toolhead; check its window is clean and uncracked.",
+          "tags": ["electrical"]
+        },
+        {
+          "id": "toolhead.board",
+          "title": "Toolhead board and its connectors",
+          "check": "Inspect the toolhead board for burn marks, melted plastic or corrosion. Reseat every connector on it and the toolhead cable at both ends.",
+          "signs": "\"The toolhead is malfunctioning\", random disconnects.",
+          "fix": "Reseat first. Replace the toolhead board or the toolhead cable if errors persist.",
+          "tags": ["electrical"]
+        }
+      ]
+    },
+    {
+      "id": "bed",
+      "title": "4. Heatbed and build surface",
+      "items": [
+        {
+          "id": "bed.plate",
+          "title": "Build plate condition",
+          "check": "Check the plate for gouges, peeling coating, warping, and that it seats flat against the alignment tab with good magnetic hold.",
+          "signs": "Adhesion problems, first layer gaps.",
+          "fix": "Clean with dish soap and water; replace a damaged or warped plate.",
+          "tags": ["physical", "common"]
+        },
+        {
+          "id": "bed.heating",
+          "title": "Heatbed heats and reads correctly",
+          "check": "Heat the bed and confirm it reaches target and holds steady. Check the bed connector and cable at the bed.",
+          "signs": "Heatbed temperature abnormal, slow or no heating.",
+          "fix": "Reseat or replace the heatbed cable; replace the heatbed if the heater or thermistor is open.",
+          "tags": ["electrical"]
+        },
+        {
+          "id": "bed.wiper",
+          "title": "Nozzle wiper",
+          "check": "The heatbed nozzle wiper is present, intact and not packed with debris.",
+          "fix": "Clean or replace the wiper. A worn wiper leaves the nozzle dirty and can cause leveling errors.",
+          "tags": ["physical"]
+        },
+        {
+          "id": "bed.mount",
+          "title": "Bed mounting and wobble",
+          "check": "Grip the bed and check for wobble or play on its carriage, loose bed screws and a sagging corner.",
+          "fix": "Tighten mounts; replace worn carriage parts.",
+          "tags": ["mechanical"]
+        }
+      ]
+    },
+    {
+      "id": "filament",
+      "title": "5. Filament path and AMS lite",
+      "items": [
+        {
+          "id": "filament.ptfe",
+          "title": "PTFE tubes and connectors",
+          "check": "Check the tubes for kinks, wear at the ends and loose connectors; filament should slide through freely.",
+          "signs": "AMS lite feed failures, filament stuck partway.",
+          "fix": "Cut the ends square or replace the tube; replace worn connectors.",
+          "tags": ["filament", "common"]
+        },
+        {
+          "id": "filament.hub",
+          "title": "Filament hub",
+          "check": "Filament passes through the hub without catching and the hub sensor detects each slot.",
+          "fix": "Clear debris or broken filament; replace the AMS lite filament hub.",
+          "appliesTo": ["a1", "a1-mini", "other"],
+          "tags": ["filament"]
+        },
+        {
+          "id": "filament.ams-feed",
+          "title": "AMS lite feeders and spool rotation",
+          "check": "Each slot loads and retracts; spools rotate freely; feeder gears are not chewing filament.",
+          "signs": "Feed timeouts, retraction failures on one slot.",
+          "fix": "Clean the feeder; check for broken filament inside; replace the failing feeder unit.",
+          "otherSeries": "P/X/H series use the enclosed AMS (AMS 2 Pro / AMS HT on newer models) with a buffer. Check the buffer and the AMS-to-printer cable.",
+          "tags": ["filament"]
+        },
+        {
+          "id": "filament.ams-link",
+          "title": "AMS lite connection",
+          "check": "The AMS lite cable is seated at both ends and the printer detects the AMS lite.",
+          "fix": "Reseat or replace the cable; update AMS lite firmware.",
+          "tags": ["filament", "electrical"]
+        },
+        {
+          "id": "filament.spool-holder",
+          "title": "Spool holder",
+          "check": "The spool holder is solid and lets the spool turn freely.",
+          "fix": "Replace a cracked or loose spool holder.",
+          "tags": ["filament"]
+        }
+      ]
+    },
+    {
+      "id": "electronics",
+      "title": "6. Electronics and power",
+      "items": [
+        {
+          "id": "electronics.power",
+          "title": "Power input, switch and PSU",
+          "check": "Power cord, power socket and switch are intact; the printer powers on reliably.",
+          "fix": "Replace the cord or socket; diagnose the PSU if the printer will not power on.",
+          "tags": ["electrical"]
+        },
+        {
+          "id": "electronics.mainboard",
+          "title": "Mainboard connectors",
+          "check": "With power off, reseat the connectors on the mainboard, including the USB/USB-C cables to the toolhead and screen. Look for burn marks.",
+          "signs": "Firmware update failures, devices not detected.",
+          "fix": "Reseat; replace a damaged cable; replace the mainboard as a last resort.",
+          "tags": ["electrical"]
+        },
+        {
+          "id": "electronics.network",
+          "title": "Wi-Fi and network",
+          "check": "The printer joins Wi-Fi and shows up in Bambu Studio/Handy.",
+          "fix": "Re-bind the printer; check the antenna connection.",
+          "otherSeries": "Some models have add-on modules (for example the H2D laser module). Check those connections when fitted.",
+          "tags": ["electrical"]
+        },
+        {
+          "id": "electronics.storage",
+          "title": "MicroSD card",
+          "check": "The card is detected and readable.",
+          "fix": "Reformat or replace the card.",
+          "tags": ["electrical"]
+        }
+      ]
+    },
+    {
+      "id": "firmware",
+      "title": "7. Firmware, error codes and calibration",
+      "items": [
+        {
+          "id": "firmware.hms",
+          "title": "HMS error codes",
+          "check": "Record any HMS error codes from the screen or app in the notes and look them up on the Bambu Lab Wiki.",
+          "fix": "Follow the wiki guide for the code; recheck the related hardware item above.",
+          "tags": ["firmware", "common"]
+        },
+        {
+          "id": "firmware.update",
+          "title": "Firmware up to date",
+          "check": "Printer and AMS lite firmware are on the current release.",
+          "fix": "Update. If an update fails repeatedly, check the internal USB cables.",
+          "tags": ["firmware"]
+        },
+        {
+          "id": "firmware.homing",
+          "title": "Homing on all axes",
+          "check": "Home all axes and watch for crashes, stalls or Z homing failures.",
+          "fix": "Go back to the motion and toolhead sensor items for the failing axis.",
+          "tags": ["firmware", "mechanical"]
+        },
+        {
+          "id": "firmware.calibration",
+          "title": "Full calibration",
+          "check": "Run the full calibration: bed leveling, vibration compensation, motor noise cancellation and flow dynamics.",
+          "fix": "If calibration fails, note the step and error code.",
+          "otherSeries": "X1 series also runs lidar calibration; H2D/X2D calibrate both nozzles (and the nozzle offset).",
+          "tags": ["firmware"]
+        }
+      ]
+    },
+    {
+      "id": "qa",
+      "title": "8. Test print and hand-back",
+      "items": [
+        {
+          "id": "qa.test-print",
+          "title": "Test print",
+          "check": "Print a calibration or benchmark model and watch the first layer, extrusion, and for any layer shifts.",
+          "fix": "Note any defects and go back to the matching section.",
+          "tags": ["qa"]
+        },
+        {
+          "id": "qa.multicolor",
+          "title": "Filament change test (AMS lite)",
+          "check": "Run a short multi-color print or load/unload each slot.",
+          "tags": ["qa", "filament"]
+        },
+        {
+          "id": "qa.noise",
+          "title": "No abnormal noise or smell",
+          "check": "Listen during the test print for grinding, clicking or fan rattle, and check for any burning smell.",
+          "tags": ["qa"]
+        },
+        {
+          "id": "qa.reassembly",
+          "title": "Reassembly check",
+          "check": "All screws and covers are back on, cables are routed and clipped, and nothing is rubbing.",
+          "tags": ["qa"]
+        },
+        {
+          "id": "qa.cleanup",
+          "title": "Clean and return accessories",
+          "check": "Clean the printer and plate, and return the accessories logged at intake.",
+          "tags": ["qa"]
+        }
+      ]
+    }
+  ]
+}

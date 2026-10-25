@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <!-- GitHub Pages can't send security headers, so the policy lives here. Only this site's own
+       files can load; no inline scripts, no third parties, no form posts, and Trusted Types
+       blocks any innerHTML-style injection. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Checklists for repairing 3D printers and computers: time the repair, mark each check, take notes, and save a completed form to your own folder. Runs entirely in your browser.">
+  <title>Repair Tracker</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/app.css">
+  <script src="js/guard.js"></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <header class="topbar" id="topbar">
+    <a class="brand" href="#/">
+      <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.2L3 17.8V21h3.2l6.3-6.3a4 4 0 0 0 5.2-5.4l-2.6 2.6-2.4-.6-.6-2.4 2.6-2.6z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <span>Repair Tracker</span>
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="#/" data-nav="repairs">Repairs</a>
+      <a href="#/view" data-nav="view">View a saved form</a>
+    </nav>
+  </header>
+  <main id="app" class="main" tabindex="-1">
+    <p class="muted">Loading…</p>
+  </main>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <noscript><p class="main">This site needs JavaScript enabled.</p></noscript>
+</body>
+</html>
