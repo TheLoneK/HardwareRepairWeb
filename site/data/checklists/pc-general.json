@@ -1,0 +1,548 @@
+{
+  "id": "pc-general",
+  "category": "pc",
+  "version": 1,
+  "title": "Windows PCs (desktops and laptops)",
+  "manufacturer": "Any",
+  "description": "Bench repair checklist for Windows desktops and laptops, ordered from the most common faults (intake damage, power, storage and software) to deeper hardware diagnostics. All-in-ones and mini PCs can use it too; items carry notes where they differ.",
+  "references": [
+    { "title": "Microsoft Support: Windows", "url": "https://support.microsoft.com/windows" },
+    { "title": "Dell Support (service tag lookup, diagnostics, drivers)", "url": "https://www.dell.com/support" },
+    { "title": "HP Support (PC Hardware Diagnostics, drivers)", "url": "https://support.hp.com" },
+    { "title": "Lenovo PC Support (diagnostics, drivers)", "url": "https://pcsupport.lenovo.com" }
+  ],
+  "safety": [
+    "Shut down and unplug before opening the case. On laptops, disconnect the internal battery connector before working on the board.",
+    "Use ESD precautions (grounded wrist strap, or touch bare grounded metal) before handling RAM, drives, cards or the motherboard.",
+    "Never open a power supply or a laptop charger. Their capacitors can hold a dangerous charge after unplugging.",
+    "Swollen or damaged lithium batteries can catch fire. Don't press, bend or puncture them; store removed batteries in a fire-safe container.",
+    "Get the customer's OK and a backup before anything that can erase data: a reinstall, a drive swap, or a BIOS/TPM reset with BitLocker on."
+  ],
+  "models": [
+    { "id": "desktop", "name": "Desktop", "series": "desktop", "primary": true },
+    { "id": "laptop", "name": "Laptop or 2-in-1", "series": "laptop", "primary": true },
+    { "id": "all-in-one", "name": "All-in-one", "series": "aio", "primary": false },
+    { "id": "mini-pc", "name": "Mini PC", "series": "mini", "primary": false },
+    { "id": "other", "name": "Other or unknown", "series": "?", "primary": false }
+  ],
+  "sections": [
+    {
+      "id": "intake",
+      "title": "1. Intake and visible damage",
+      "description": "Confirm the complaint and look before you power on.",
+      "items": [
+        {
+          "id": "intake.reproduce",
+          "title": "Reproduce the reported fault",
+          "check": "Get the customer's description, any error messages and when it started. Reproduce it before changing anything and note exactly what you saw.",
+          "signs": "Can't reproduce it: ask for steps, a photo of the error or when it happens. It may end as No fault found.",
+          "tags": ["common"]
+        },
+        {
+          "id": "intake.data",
+          "title": "Customer data, sign-in and encryption",
+          "check": "Ask whether the data matters and is backed up. Record how you'll sign in (PIN/password arrangement) and whether BitLocker or device encryption is on; get the recovery key before touching the BIOS, TPM or drive.",
+          "fix": "Back up first when the drive is failing or a reinstall is likely. Image a failing drive before running long scans on it.",
+          "tags": ["common", "safety"]
+        },
+        {
+          "id": "intake.physical",
+          "title": "Case, hinge and port damage",
+          "check": "Look for cracks, dents, broken hinges, loose bezels, bent or loose ports, and missing screws or feet. Photograph existing damage at intake.",
+          "signs": "Drop damage, lid that won't stay up, ports that only work at an angle.",
+          "otherSeries": "All-in-ones: also check the stand, rear cover clips and the screen glass.",
+          "tags": ["physical", "common"]
+        },
+        {
+          "id": "intake.liquid",
+          "title": "Liquid damage or corrosion",
+          "check": "Look for sticky keys, residue, water stains, corrosion on ports and screws, and tripped liquid contact indicators.",
+          "fix": "Don't power on a wet unit. Disconnect the battery, disassemble, clean with isopropyl alcohol and inspect under chips and connectors for corrosion.",
+          "tags": ["physical", "safety"]
+        },
+        {
+          "id": "intake.battery-swell",
+          "title": "Swollen battery",
+          "check": "Look for a raised touchpad, a lifted keyboard, a bulging bottom cover or gaps opening along the case seams.",
+          "fix": "Stop. Don't press or puncture it. Remove the battery, store it in a fire-safe container and replace it.",
+          "appliesTo": ["laptop"],
+          "tags": ["physical", "safety", "common"]
+        },
+        {
+          "id": "intake.burn",
+          "title": "Burn marks, melted plastic or smell",
+          "check": "Inspect the power socket, charger, charging port, PSU and motherboard power connectors. Smell for burnt electronics.",
+          "fix": "Find the source before powering on. Replace any scorched cable, charger, PSU or board.",
+          "tags": ["physical", "safety"]
+        },
+        {
+          "id": "intake.accessories",
+          "title": "Charger and accessories received",
+          "check": "Record what came in: charger (wattage and part number), cables, dock, external drives, peripherals. Note anything missing.",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "id": "power",
+      "title": "2. Power and startup",
+      "description": "Won't turn on, turns off, or no picture at startup.",
+      "items": [
+        {
+          "id": "power.source",
+          "title": "Outlet, power cable and power strip",
+          "check": "Try a known-good outlet and power cable. Bypass power strips, UPS units and surge protectors.",
+          "tags": ["electrical", "common"]
+        },
+        {
+          "id": "power.adapter",
+          "title": "Power adapter / charger",
+          "check": "Check the charger's wattage matches the original, its LED lights, the barrel tip or USB-C end isn't damaged, and the output with a meter or USB-C power meter.",
+          "signs": "Charges slowly, \"plugged in, not charging\", slow-charger warning, shuts off under load.",
+          "fix": "Swap in a known-good charger of the same or higher wattage.",
+          "otherSeries": "All-in-ones and mini PCs often use a laptop-style external brick; test it the same way.",
+          "appliesTo": ["laptop", "all-in-one", "mini-pc"],
+          "tags": ["electrical", "common"]
+        },
+        {
+          "id": "power.psu",
+          "title": "Power supply (PSU)",
+          "check": "Rear switch on, voltage selector (if fitted) correct, PSU fan spins. Test with a PSU tester or a known-good PSU, and check the 24-pin and CPU 8-pin connectors are fully seated.",
+          "signs": "Completely dead, clicking, random restarts under load, burning smell.",
+          "fix": "Replace with a unit of equal or higher wattage and the right connectors. Don't open the PSU.",
+          "appliesTo": ["desktop"],
+          "tags": ["electrical", "common"]
+        },
+        {
+          "id": "power.drain",
+          "title": "Drain residual power / embedded controller reset",
+          "check": "Unplug power (and disconnect the battery on laptops), hold the power button for 30 seconds, then retry. Laptops: also try the maker's EC reset (pinhole or key combination) if it has one.",
+          "signs": "No response at all after a power cut, a dead battery or a sleep that never woke up.",
+          "tags": ["common"]
+        },
+        {
+          "id": "power.codes",
+          "title": "Beep codes, diagnostic LEDs and error lights",
+          "check": "Note any beeps, blinking power or charging LED patterns, and motherboard debug LEDs or codes (CPU, DRAM, VGA, BOOT). Look them up for this make and model.",
+          "fix": "The code usually points at the part to test next: RAM, CPU, graphics or the board.",
+          "tags": ["common"]
+        },
+        {
+          "id": "power.button",
+          "title": "Power button and front panel",
+          "check": "Check the power button clicks and its cable is seated (front-panel header on desktops, button ribbon on laptops). Desktops: briefly short the PWR pins to rule out the button.",
+          "tags": ["physical"]
+        },
+        {
+          "id": "power.shutdowns",
+          "title": "Random shutdowns or restarts",
+          "check": "Check Event Viewer for Kernel-Power 41 and WHEA-Logger errors and when they happen. Reproduce under load while watching temperatures.",
+          "signs": "Turns off under load (heat or PSU), restarts with no warning, shuts off on battery at a set percentage.",
+          "fix": "Under load → check cooling and the PSU/charger. WHEA errors → test RAM, CPU and temperatures.",
+          "tags": ["electrical"]
+        }
+      ]
+    },
+    {
+      "id": "storage",
+      "title": "3. Storage and boot drive",
+      "description": "Behind most \"slow PC\" and \"won't boot\" complaints.",
+      "items": [
+        {
+          "id": "storage.detected",
+          "title": "Boot drive detected in BIOS/UEFI",
+          "check": "Enter BIOS/UEFI setup and confirm the boot drive is listed and first in the boot order. Check the boot mode (UEFI vs Legacy/CSM) and that the storage mode (AHCI vs RAID/RST/VMD) hasn't changed.",
+          "signs": "\"No bootable device\", \"Boot device not found\", goes straight into the BIOS.",
+          "tags": ["common"]
+        },
+        {
+          "id": "storage.health",
+          "title": "Drive health (SMART)",
+          "check": "Read SMART with CrystalDiskInfo, the drive maker's tool or the built-in diagnostics. Look at reallocated and pending sectors, CRC errors, NVMe percentage used and media errors.",
+          "signs": "Very slow, freezes for seconds, clicking hard drive, corrupt files, long boot times.",
+          "fix": "Caution or Bad: back up or clone now, then replace. Moving a hard-drive PC to an SSD fixes most \"slow\" complaints.",
+          "tags": ["common"]
+        },
+        {
+          "id": "storage.space",
+          "title": "Free space on the system drive",
+          "check": "Check C: has at least 10–15% free. Look for large Downloads, temp files, Windows.old and update caches.",
+          "fix": "Disk Cleanup (including system files) or Storage Sense, move user data off, or fit a larger drive.",
+          "tags": ["software", "common"]
+        },
+        {
+          "id": "storage.seating",
+          "title": "Drive cables and seating",
+          "check": "Reseat SATA data and power cables, or the M.2 drive and its screw. Try another SATA port and cable. A rising CRC error count points at the cable or connection.",
+          "tags": ["physical"]
+        },
+        {
+          "id": "storage.boot-repair",
+          "title": "Windows startup repair",
+          "check": "If the drive is healthy but Windows won't start: try Startup Repair, Safe Mode, System Restore and uninstalling the latest update from the recovery environment, then bootrec / bcdboot if needed.",
+          "signs": "Boot loop, stuck on \"Preparing Automatic Repair\", INACCESSIBLE_BOOT_DEVICE.",
+          "tags": ["software"]
+        },
+        {
+          "id": "storage.encryption",
+          "title": "BitLocker recovery prompt",
+          "check": "If it asks for a BitLocker recovery key, get it from the customer's Microsoft account or their IT department. Don't wipe a drive that asks for a key without the customer's consent.",
+          "signs": "Recovery prompt after a BIOS update, TPM reset, board swap or boot-order change.",
+          "tags": ["software", "safety"]
+        }
+      ]
+    },
+    {
+      "id": "software",
+      "title": "4. Windows and software",
+      "description": "The usual cause of \"slow\", \"pop-ups\" and \"keeps crashing\".",
+      "items": [
+        {
+          "id": "os.startup",
+          "title": "Startup apps and background load",
+          "check": "In Task Manager, check CPU, memory and disk use at idle, and the Startup apps list for things that don't need to run.",
+          "fix": "Disable unneeded startup apps and remove bundled trial software.",
+          "tags": ["software", "common"]
+        },
+        {
+          "id": "os.malware",
+          "title": "Malware and unwanted software",
+          "check": "Run a full Microsoft Defender scan (Defender Offline if anything looks off). Review installed programs, browser extensions, homepage/search settings and scheduled tasks.",
+          "signs": "Pop-ups, search redirects, unknown programs, high CPU from unknown processes, ransom notes.",
+          "fix": "Remove and rescan. Ransomware: disconnect it from the network and stop; let the customer decide before anything is wiped.",
+          "tags": ["software", "common"]
+        },
+        {
+          "id": "os.drivers",
+          "title": "Device Manager errors and drivers",
+          "check": "Look for devices with warning icons or \"Unknown device\". Check chipset, graphics, storage, network and audio drivers come from the PC or part maker.",
+          "fix": "Install drivers from the maker's support site using the service tag or serial.",
+          "tags": ["software", "common"]
+        },
+        {
+          "id": "os.updates",
+          "title": "Windows Update",
+          "check": "Check for pending, failed or stuck updates, and that this Windows version is still supported.",
+          "fix": "Run the Windows Update troubleshooter, clear the SoftwareDistribution cache, or install the latest cumulative update manually.",
+          "tags": ["software", "common"]
+        },
+        {
+          "id": "os.crashes",
+          "title": "Blue screens and app crashes",
+          "check": "Check Reliability Monitor and Event Viewer, and read minidumps in C:\\Windows\\Minidump for the stop code and the driver named.",
+          "signs": "Blue screens (BSOD), apps closing, \"not responding\".",
+          "fix": "A driver is named → update or roll it back. Memory or WHEA errors → test RAM and temperatures.",
+          "tags": ["software"]
+        },
+        {
+          "id": "os.integrity",
+          "title": "System file check",
+          "check": "As administrator run DISM /Online /Cleanup-Image /RestoreHealth, then sfc /scannow, and note what each reports.",
+          "fix": "If both keep failing, an in-place upgrade (repair install) keeps apps and files while replacing Windows.",
+          "tags": ["software"]
+        },
+        {
+          "id": "os.profile",
+          "title": "User profile and sign-in",
+          "check": "Can the user sign in normally? Look for a temporary profile, a corrupted profile, a forgotten PIN or password, or a Microsoft account sign-in problem.",
+          "tags": ["software"]
+        },
+        {
+          "id": "os.activation",
+          "title": "Windows activation and licences",
+          "check": "Settings → Activation shows Windows is activated, and Office and other paid software are licensed.",
+          "signs": "\"Activate Windows\" watermark after a motherboard swap or reinstall.",
+          "tags": ["software"]
+        }
+      ]
+    },
+    {
+      "id": "cooling",
+      "title": "5. Cooling and temperatures",
+      "items": [
+        {
+          "id": "cooling.dust",
+          "title": "Dust in fans, heatsinks and vents",
+          "check": "Look into the intake and exhaust vents and heatsink fins for dust mats and pet hair.",
+          "fix": "Blow out with compressed air while holding fans still. Open the case or bottom cover for heavy build-up.",
+          "tags": ["physical", "common"]
+        },
+        {
+          "id": "cooling.fans",
+          "title": "Fans spinning and quiet",
+          "check": "Confirm every fan spins (CPU, case, graphics card, laptop blower). Listen for grinding, clicking or rattling.",
+          "fix": "Clean, reseat the fan connector, or replace a noisy or failed fan.",
+          "tags": ["physical", "common"]
+        },
+        {
+          "id": "cooling.temps",
+          "title": "CPU and GPU temperatures under load",
+          "check": "Watch temperatures and clock speeds (HWiNFO or similar) at idle and during a 10-minute stress test. Look for thermal throttling.",
+          "signs": "Hot to the touch, loud fans, slows down after a few minutes, shuts off under load.",
+          "fix": "Clean first. If temperatures stay high, repaste and check the heatsink is mounted evenly.",
+          "tags": ["common"]
+        },
+        {
+          "id": "cooling.paste",
+          "title": "Thermal paste and pads",
+          "check": "On older or overheating units, inspect the CPU/GPU paste (dried out or pumped out) and the pads on memory and power components.",
+          "fix": "Clean with isopropyl alcohol and repaste. Replace pads with the same thickness.",
+          "tags": ["physical"]
+        },
+        {
+          "id": "cooling.liquid",
+          "title": "Liquid cooler pump and leaks",
+          "check": "Pump running (pump header shows RPM, you can feel or hear it), no leaks on the tubes or block, radiator fans spinning.",
+          "signs": "CPU overheats within seconds of booting, gurgling noises, coolant residue.",
+          "appliesTo": ["desktop"],
+          "tags": ["physical"]
+        }
+      ]
+    },
+    {
+      "id": "memory",
+      "title": "6. Memory (RAM)",
+      "items": [
+        {
+          "id": "memory.seating",
+          "title": "RAM seated in the right slots",
+          "check": "Reseat the modules. On desktops, use the slots the motherboard manual recommends for dual channel (usually A2 and B2).",
+          "signs": "Fans run but no picture, DRAM debug LED, memory beep code.",
+          "fix": "Reseat, clean the contacts, then try one module at a time in each slot.",
+          "otherSeries": "Thin laptops and some mini PCs have memory soldered to the board; it can't be reseated or replaced separately.",
+          "tags": ["physical", "common"]
+        },
+        {
+          "id": "memory.test",
+          "title": "Memory test",
+          "check": "Run Windows Memory Diagnostic or MemTest86 for at least one full pass. Note any errors and which module.",
+          "signs": "Random blue screens (MEMORY_MANAGEMENT, PAGE_FAULT_IN_NONPAGED_AREA), corrupt files, failed installs.",
+          "fix": "Replace the failing module. If errors only appear with XMP/EXPO on, run the memory at default speed.",
+          "tags": []
+        },
+        {
+          "id": "memory.capacity",
+          "title": "Enough memory for the workload",
+          "check": "Compare installed memory with what's in use in Task Manager → Performance during normal work.",
+          "signs": "Memory near 100% with a browser and a few apps open; slow switching between apps.",
+          "fix": "Upgrade with a matching type and speed, or reduce what runs at once.",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "id": "display",
+      "title": "7. Display and graphics",
+      "items": [
+        {
+          "id": "display.external",
+          "title": "Test with an external monitor",
+          "check": "Connect a known-good monitor. Picture on the external screen but not the built-in one points at the panel, its cable or the backlight; nothing on either points at graphics, RAM or the board.",
+          "appliesTo": ["laptop", "all-in-one"],
+          "tags": ["common"]
+        },
+        {
+          "id": "display.cable",
+          "title": "Monitor, cable and input",
+          "check": "Check the monitor's input source, and try another cable and port. With a graphics card fitted, plug into the card, not the motherboard.",
+          "appliesTo": ["desktop", "mini-pc", "other"],
+          "tags": ["common"]
+        },
+        {
+          "id": "display.panel",
+          "title": "Screen damage, lines and backlight",
+          "check": "Look for cracks, lines, dead pixels and flicker when moving the lid. Shine a flashlight at a dark screen: a faint image means the backlight has failed.",
+          "fix": "Lines or flicker that change as the hinge moves → display cable. Cracks or lines that don't → replace the panel (match the part number and connector).",
+          "appliesTo": ["laptop", "all-in-one"],
+          "tags": ["physical", "common"]
+        },
+        {
+          "id": "display.gpu",
+          "title": "Graphics card seating and power",
+          "check": "Reseat the card, check its PCIe power cables are fully in, the slot latch clicks and the card isn't sagging. Look for artifacts during a GPU stress test.",
+          "signs": "Artifacts, \"display driver stopped responding\", black screen under load.",
+          "appliesTo": ["desktop"],
+          "tags": ["physical"]
+        },
+        {
+          "id": "display.driver",
+          "title": "Graphics driver",
+          "check": "Use the current driver from the PC maker or the GPU vendor. If problems started after an update, roll back or do a clean install.",
+          "tags": ["software"]
+        }
+      ]
+    },
+    {
+      "id": "io",
+      "title": "8. Keyboard, touchpad, ports and audio",
+      "items": [
+        {
+          "id": "io.keyboard",
+          "title": "Keyboard",
+          "check": "Test every key with a key tester. Look for stuck, dead or double-typing keys and a working backlight.",
+          "fix": "Clean under the keys. Liquid damage or several dead keys usually means replacing the keyboard (often part of the top case).",
+          "appliesTo": ["laptop"],
+          "tags": ["physical", "common"]
+        },
+        {
+          "id": "io.touchpad",
+          "title": "Touchpad",
+          "check": "Test pointer movement, clicks and gestures, and that it isn't turned off with an Fn key or in Settings.",
+          "signs": "A raised or stiff touchpad can mean a swollen battery underneath.",
+          "appliesTo": ["laptop"],
+          "tags": ["physical"]
+        },
+        {
+          "id": "io.charging-port",
+          "title": "Charging port / DC jack",
+          "check": "Wiggle the charger plug gently: does charging cut in and out? Look for a loose, burnt or bent jack or USB-C port.",
+          "fix": "Replace the DC jack or USB-C port board. Some are soldered to the motherboard.",
+          "appliesTo": ["laptop"],
+          "tags": ["physical", "common"]
+        },
+        {
+          "id": "io.usb",
+          "title": "USB and other ports",
+          "check": "Test each USB-A and USB-C port with a known-good device. Check for loose or bent ports, and USB-C charging and display output where supported.",
+          "tags": ["physical"]
+        },
+        {
+          "id": "io.audio",
+          "title": "Speakers, headphone jack and microphone",
+          "check": "Play audio through the speakers and headphones and record with the microphone. Check the right input and output devices are selected.",
+          "tags": []
+        },
+        {
+          "id": "io.webcam",
+          "title": "Webcam",
+          "check": "Open the Camera app. Check the privacy shutter or camera key, and camera permissions in Settings.",
+          "appliesTo": ["laptop", "all-in-one"],
+          "tags": []
+        }
+      ]
+    },
+    {
+      "id": "network",
+      "title": "9. Network and wireless",
+      "items": [
+        {
+          "id": "network.wifi",
+          "title": "Wi-Fi connects and stays connected",
+          "check": "Connect to a known network, check signal and speed, and that Airplane mode or a Wi-Fi switch isn't on.",
+          "fix": "Update or reinstall the Wi-Fi driver, or use Network reset. Weak signal after a repair: check the antenna cables are connected.",
+          "tags": ["common"]
+        },
+        {
+          "id": "network.ethernet",
+          "title": "Wired Ethernet",
+          "check": "Plug in a known-good cable: link light on, gets an IP address, reaches the internet.",
+          "tags": []
+        },
+        {
+          "id": "network.bluetooth",
+          "title": "Bluetooth",
+          "check": "Pair a known device. Check the Bluetooth adapter shows in Device Manager without errors.",
+          "tags": []
+        }
+      ]
+    },
+    {
+      "id": "battery",
+      "title": "10. Battery (laptops)",
+      "items": [
+        {
+          "id": "battery.health",
+          "title": "Battery health and wear",
+          "check": "Run powercfg /batteryreport and compare full charge capacity with design capacity. Note the cycle count.",
+          "signs": "Short runtime, dies suddenly at a set percentage, won't charge past a level.",
+          "fix": "Replace when well worn (roughly below 60–70% of design capacity). Check for a charge limit setting (e.g. 80% battery care) before replacing.",
+          "appliesTo": ["laptop"],
+          "tags": ["common"]
+        },
+        {
+          "id": "battery.charging",
+          "title": "Charges and reports correctly",
+          "check": "Charging light and Windows both show charging, the percentage rises steadily, and it runs on battery when unplugged.",
+          "appliesTo": ["laptop"],
+          "tags": []
+        }
+      ]
+    },
+    {
+      "id": "board",
+      "title": "11. Motherboard, BIOS and hardware diagnostics",
+      "description": "Deeper checks when the earlier sections haven't found it.",
+      "items": [
+        {
+          "id": "board.diagnostics",
+          "title": "Maker's built-in hardware diagnostics",
+          "check": "Run the maker's diagnostics (Dell ePSA / SupportAssist, HP PC Hardware Diagnostics, Lenovo Diagnostics, or the motherboard's BIOS tests) and note any error codes.",
+          "tags": []
+        },
+        {
+          "id": "board.bios",
+          "title": "BIOS/UEFI version and settings",
+          "check": "Note the BIOS version and compare with the latest from the maker. Check date and time, boot mode, Secure Boot and TPM status.",
+          "fix": "Update only on stable power (laptop charger connected and battery charged). Suspend BitLocker first. Load defaults if settings were changed.",
+          "tags": []
+        },
+        {
+          "id": "board.cmos",
+          "title": "CMOS battery",
+          "check": "Wrong date and time after unplugging, or a \"CMOS checksum\" message, means the coin cell is flat.",
+          "fix": "Replace the coin cell (often a CR2032), then set the date, time and BIOS settings again.",
+          "tags": []
+        },
+        {
+          "id": "board.physical",
+          "title": "Board damage and shorts",
+          "check": "With the board visible, look for bulging or leaking capacitors, burnt components, corrosion, bent CPU socket pins (desktops) and stray screws or standoffs touching the board.",
+          "tags": ["physical"]
+        },
+        {
+          "id": "board.minimal",
+          "title": "Minimal-configuration boot test",
+          "check": "Strip down to motherboard, CPU and cooler, one RAM module and the PSU (on the bench if needed). Add parts back one at a time until the fault returns.",
+          "appliesTo": ["desktop"],
+          "tags": []
+        }
+      ]
+    },
+    {
+      "id": "qa",
+      "title": "12. Final tests and hand-back",
+      "items": [
+        {
+          "id": "qa.original",
+          "title": "Original complaint fixed",
+          "check": "Repeat the steps that reproduced the fault and confirm it no longer happens.",
+          "tags": ["common"]
+        },
+        {
+          "id": "qa.stress",
+          "title": "Stress / burn-in test",
+          "check": "Run a CPU and GPU stress test for 15–30 minutes. Temperatures stay in range with no errors, restarts or throttling.",
+          "tags": []
+        },
+        {
+          "id": "qa.updates",
+          "title": "Updates and security left current",
+          "check": "Windows Update finished with no pending restart, Microsoft Defender (or the customer's antivirus) on and up to date.",
+          "tags": ["software"]
+        },
+        {
+          "id": "qa.data",
+          "title": "Customer data and accounts intact",
+          "check": "Spot-check the customer's files, email and key apps open. Remove any temporary admin accounts, tools or bench files you added.",
+          "tags": []
+        },
+        {
+          "id": "qa.reassembly",
+          "title": "Reassembly and cleanup",
+          "check": "All screws back, covers clipped in fully, no rattles, rubber feet on, and the unit cleaned (screen, keyboard, case).",
+          "tags": []
+        }
+      ]
+    }
+  ]
+}

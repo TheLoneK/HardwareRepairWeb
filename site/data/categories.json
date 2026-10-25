@@ -1,0 +1,27 @@
+{
+  "categories": [
+    {
+      "id": "3d-printer",
+      "name": "3D Printers",
+      "singular": "3D printer",
+      "folder": "3DPrinters",
+      "icon": "printer",
+      "modelLabel": "Model",
+      "serialHint": "From the rear QR sticker",
+      "notesHint": "Anything else: what the customer reported, error codes, parts used, what to watch next time…",
+      "actions": ["none", "cleaned", "adjusted", "reseated", "lubricated", "repaired", "replaced", "part_ordered", "firmware"]
+    },
+    {
+      "id": "pc",
+      "name": "Computers",
+      "singular": "Computer",
+      "folder": "PC",
+      "icon": "computer",
+      "modelLabel": "Type",
+      "serialHint": "Service tag or serial number",
+      "notesHint": "Make and model (e.g. Dell Latitude 5440), what the customer reported, error codes / stop codes, parts used, passwords handled, what to watch next time…",
+      "actions": ["none", "cleaned", "reseated", "repaired", "replaced", "part_ordered", "firmware", "software"],
+      "actionLabels": { "firmware": "BIOS / firmware / settings" }
+    }
+  ]
+}
