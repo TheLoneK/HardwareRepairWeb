@@ -3,9 +3,9 @@
 // presses save immediately, typing saves after a short pause.
 import { canPickFolder, saveForm } from '../folder.js';
 import { buildDisplay, formDocument, formFileName, renderFormHtml } from '../form-file.js';
-import { LIMITS, STATUS_LABELS, actionLabel, durationSeconds, itemsForModel, modelName, normalizeRepair, progress } from '../model.js';
+import { LIMITS, STATUS_LABELS, actionLabel, cleanLine, cleanPersonName, cleanNotes, cleanSerial, cleanTicket, durationSeconds, itemsForModel, modelName, normalizeRepair, progress } from '../model.js';
 import { deleteRepair, getRepair, putRepair } from '../store.js';
-import { charCounter, confirmButton, debounce, field, fmtClock, fmtDateTime, fromLocalInput, h, mount, secretInput, statusPill, toLocalInput, toast } from '../dom.js';
+import { charCounter, confirmButton, debounce, field, fmtClock, fmtDateTime, fromLocalInput, guardInput, h, mount, secretInput, statusPill, toLocalInput, toast } from '../dom.js';
 import { categoryOfChecklist, modelOptions, setCategory, state } from '../state.js';
 
 const RESULT_BUTTONS = [
@@ -103,21 +103,32 @@ export function renderRepair(app, id, { navigate }) {
   const titleEl = h('h1');
   const pillHolder = h('span');
   const modelSel = h('select', { on: { change: () => { queueFields({ deviceModel: modelSel.value }, { now: true }); renderChecklist(); refreshDerived(); } } }, modelOptions(h, checklist, repair.deviceModel));
-  const serial = secretInput('serial number', { value: repair.serialNumber, maxLength: LIMITS.serialMaxLength, autocapitalize: 'characters' });
+  const serial = secretInput('serial number', { value: repair.serialNumber, autocapitalize: 'characters' });
+  guardInput(serial.input, { max: LIMITS.serialMaxLength, clean: cleanSerial });
   serial.input.addEventListener('input', () => queueFields({ serialNumber: serial.input.value }));
-  const ticket = secretInput('ticket ref', { value: repair.ticketRef, maxLength: LIMITS.ticketMaxLength });
+  const ticket = secretInput('ticket ref', { value: repair.ticketRef });
+  guardInput(ticket.input, { max: LIMITS.ticketMaxLength, clean: cleanTicket });
   ticket.input.addEventListener('input', () => queueFields({ ticketRef: ticket.input.value }));
-  const tech = h('input', { value: repair.technicianName, maxLength: LIMITS.technicianMaxLength, placeholder: 'Your name', on: { input: () => queueFields({ technicianName: tech.value }) } });
+  const tech = guardInput(h('input', { value: repair.technicianName, placeholder: 'Your name' }), { max: LIMITS.technicianMaxLength, clean: cleanPersonName });
+  tech.addEventListener('input', () => queueFields({ technicianName: tech.value }));
 
   // ---------- timing ----------
-  const startIn = h('input', { type: 'datetime-local', value: toLocalInput(repair.startedAt), on: { change: () => setTime('startedAt', startIn.value) } });
-  const finishIn = h('input', { type: 'datetime-local', value: toLocalInput(repair.finishedAt), on: { change: () => setTime('finishedAt', finishIn.value) } });
+  // The pickers accept years up to 275760; keep times to a believable range.
+  const TIME_RANGE = { min: '2000-01-01T00:00', max: '2099-12-31T23:59' };
+  const startIn = h('input', { type: 'datetime-local', ...TIME_RANGE, value: toLocalInput(repair.startedAt), on: { change: () => setTime('startedAt', startIn.value) } });
+  const finishIn = h('input', { type: 'datetime-local', ...TIME_RANGE, value: toLocalInput(repair.finishedAt), on: { change: () => setTime('finishedAt', finishIn.value) } });
   const elapsedEl = h('div', { class: 'elapsed', text: '0:00:00' });
   const elapsedLabel = h('div', { class: 'elapsed-label', text: 'Elapsed' });
 
   function setTime(key, localValue) {
     const iso = fromLocalInput(localValue);
     const next = { ...repair, [key]: iso };
+    if (iso && (localValue < TIME_RANGE.min || localValue > TIME_RANGE.max)) {
+      toast('Pick a date between 2000 and 2099.', { error: true });
+      startIn.value = toLocalInput(repair.startedAt);
+      finishIn.value = toLocalInput(repair.finishedAt);
+      return;
+    }
     if (next.startedAt && next.finishedAt && Date.parse(next.finishedAt) < Date.parse(next.startedAt)) {
       toast('Finish time cannot be before the start time.', { error: true });
       startIn.value = toLocalInput(repair.startedAt);
@@ -187,13 +198,8 @@ export function renderRepair(app, id, { navigate }) {
         { 'aria-label': 'Action taken', on: { change: () => queueItem(item.id, { ...results.get(item.id), action: actionSel.value }) } },
         actionsFor(res.action).map((a) => h('option', { value: a, selected: a === res.action, text: actionLabel(category, a) })),
       );
-      const detailIn = h('input', {
-        value: res.detail,
-        maxLength: LIMITS.itemDetailMaxLength,
-        placeholder: 'What did you find? (part, error code…)',
-        'aria-label': 'Issue detail',
-        on: { input: () => queueItem(item.id, { ...results.get(item.id), detail: detailIn.value }, { now: false }) },
-      });
+      const detailIn = guardInput(h('input', { value: res.detail, placeholder: 'What did you find? (part, error code…)', 'aria-label': 'Issue detail' }), { max: LIMITS.itemDetailMaxLength, clean: cleanLine });
+      detailIn.addEventListener('input', () => queueItem(item.id, { ...results.get(item.id), detail: detailIn.value }, { now: false }));
       issueDetail = h('div', { class: 'issue-detail' }, actionSel, detailIn);
     }
 
@@ -336,11 +342,8 @@ export function renderRepair(app, id, { navigate }) {
   );
 
   // ---------- notes ----------
-  const notes = h('textarea', {
-    maxLength: LIMITS.notesMaxLength,
-    placeholder: category?.notesHint || 'Anything else: what the customer reported, error codes, parts used, what to watch next time…',
-    on: { input: () => queueFields({ notes: notes.value }) },
-  });
+  const notes = guardInput(h('textarea', { placeholder: category?.notesHint || 'Anything else: what the customer reported, error codes, parts used, what to watch next time…' }), { max: LIMITS.notesMaxLength, clean: cleanNotes });
+  notes.addEventListener('input', () => queueFields({ notes: notes.value }));
   notes.value = repair.notes;
 
   // ---------- outcome ----------

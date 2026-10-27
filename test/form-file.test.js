@@ -89,3 +89,31 @@ test('file names are safe on Windows and only show the end of the serial', () =>
   assert.equal(cleanName('..\\..\\evil.html'), '-..-evil.html');
   assert.equal(cleanName(' . CON . '), 'CON');
 });
+
+test('labels and fields from an opened file lose invisible and direction-flipping characters', () => {
+  const repair = sample();
+  const doc = formDocument({ repair, display: buildDisplay(repair, checklist, category) });
+  doc.display.modelName = 'A1\u202eexe.lmth';
+  doc.display.sections[0].title = 'Mo\u200btion\nNext';
+  doc.repair.serialNumber = 'SN\u202e0123';
+  const back = readFormText(renderFormHtml(doc));
+  assert.equal(back.display.modelName, 'A1exe.lmth');
+  assert.equal(back.display.sections[0].title, 'Motion Next');
+  assert.equal(back.repair.serialNumber, 'SN0123');
+});
+
+test('forms saved under the older, longer limits still open in the viewer', () => {
+  const repair = sample();
+  const doc = formDocument({ repair, display: buildDisplay(repair, checklist, category) });
+  doc.repair.serialNumber = 'X'.repeat(64);
+  doc.repair.technicianName = 'N'.repeat(60);
+  const back = readFormText(renderFormHtml(doc));
+  assert.equal(back.repair.serialNumber.length, 64);
+  assert.equal(back.repair.technicianName.length, 60);
+});
+
+test('file names stay plain ASCII whatever the serial holds', () => {
+  const repair = normalizeRepair({ ...sample(), serialNumber: 'AB12\u202e😀🔥lmth.exe' });
+  const name = formFileName(repair, buildDisplay(repair, checklist, category));
+  assert.match(name, /^[\x20-\x7e]+$/);
+});

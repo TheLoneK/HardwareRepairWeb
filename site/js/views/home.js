@@ -1,9 +1,9 @@
 // Repairs home for the selected device type: start a new repair, pick up one that's in progress
 // on this device, and choose where completed forms are saved. The device tabs switch types.
 import { canPickFolder, chooseFolder, forgetFolder, savedFolder } from '../folder.js';
-import { LIMITS, ValidationError, maskTail, modelName, newRepair } from '../model.js';
+import { LIMITS, ValidationError, cleanPersonName, cleanSerial, cleanTicket, maskTail, modelName, newRepair } from '../model.js';
 import { clearEverything, deleteRepair, getTechnician, listRepairs, putRepair, setTechnician, storageWorks } from '../store.js';
-import { confirmButton, field, fmtDateTime, fmtDuration, h, lowerFirst, mount, secretInput, statusPill, toast } from '../dom.js';
+import { confirmButton, field, fmtDateTime, fmtDuration, guardInput, h, lowerFirst, mount, secretInput, statusPill, toast } from '../dom.js';
 import { categoryOfChecklist, checklistsInCategory, currentCategory, modelOptions, state } from '../state.js';
 import { deviceTabs } from './device-tabs.js';
 
@@ -23,9 +23,11 @@ export async function renderHome(app, { navigate }) {
   const fillModels = () => modelSel.replaceChildren(...modelOptions(h, byId.get(checklistSel.value), null));
   checklistSel.addEventListener('change', fillModels);
   fillModels();
-  const serial = secretInput('serial number', { maxLength: LIMITS.serialMaxLength, placeholder: category.serialHint || 'Serial number', autocapitalize: 'characters' });
-  const ticket = secretInput('ticket ref', { maxLength: LIMITS.ticketMaxLength, placeholder: 'Work order / RMA' });
-  const tech = h('input', { maxLength: LIMITS.technicianMaxLength, value: getTechnician(), placeholder: 'Your name', autocomplete: 'name' });
+  const serial = secretInput('serial number', { placeholder: category.serialHint || 'Serial number', autocapitalize: 'characters' });
+  guardInput(serial.input, { max: LIMITS.serialMaxLength, clean: cleanSerial });
+  const ticket = secretInput('ticket ref', { placeholder: 'Work order / RMA' });
+  guardInput(ticket.input, { max: LIMITS.ticketMaxLength, clean: cleanTicket });
+  const tech = guardInput(h('input', { value: getTechnician(), placeholder: 'Your name', autocomplete: 'name' }), { max: LIMITS.technicianMaxLength, clean: cleanPersonName });
   const error = h('p', { class: 'error-text', role: 'alert' });
   const startBtn = h('button', { class: 'btn btn-primary', type: 'submit', text: 'Start repair' });
 

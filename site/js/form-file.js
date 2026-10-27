@@ -4,7 +4,7 @@
 //   - carries the repair as JSON in <script type="application/json"> so HardwareRepairTracker
 //     (or this site's viewer) can read it back without trusting the page's HTML.
 // Pure functions only: data in, string or object out.
-import { LIMITS, STATUS_LABELS, ValidationError, actionLabel, itemsForModel, maskTail, modelName, normalizeRepair } from './model.js';
+import { LIMITS, STATUS_LABELS, ValidationError, actionLabel, cleanLabel, itemsForModel, maskTail, modelName, normalizeRepair } from './model.js';
 
 export const FORM_FORMAT = 'hardware-repair-form';
 export const FORM_FORMAT_VERSION = 1;
@@ -89,7 +89,8 @@ export function buildDisplay(repair, checklist, category) {
   };
 }
 
-const short = (v, max = 300) => (typeof v === 'string' ? v.slice(0, max) : '');
+// Untrusted labels: invisible and direction-flipping characters removed, then length-capped.
+const short = (v, max = 300) => (typeof v === 'string' ? [...cleanLabel(v)].slice(0, max).join('').trim() : '');
 
 // Display data from a file is untrusted: keep only strings of sane length in the expected shape.
 export function normalizeDisplay(raw) {
@@ -263,9 +264,9 @@ export function readFormText(textContent) {
   }
   if (data && data.format === FORM_FORMAT) {
     if (data.formatVersion !== FORM_FORMAT_VERSION) fail('This form was saved by a newer version of the site. Reload the page and try again.');
-    return { repair: normalizeRepair(data.repair), display: normalizeDisplay(data.display), savedAt: safeIso(data.savedAt) };
+    return { repair: normalizeRepair(data.repair, { legacy: true }), display: normalizeDisplay(data.display), savedAt: safeIso(data.savedAt) };
   }
-  return { repair: normalizeRepair(data), display: null, savedAt: null };
+  return { repair: normalizeRepair(data, { legacy: true }), display: null, savedAt: null };
 }
 
 function parseJson(s) {
