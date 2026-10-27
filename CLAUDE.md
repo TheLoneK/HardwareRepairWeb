@@ -8,7 +8,7 @@ Public, login-free version of HardwareRepairTracker's web UI, published from `si
 - **Modular:** one concern per file, one file per view.
 - **Zero dependencies, no build step.** Vanilla ES modules in `site/`, Node built-ins for scripts and tests.
 - **Checklists are data** copied from the tracker's `shared/` (`npm run sync-checklists`). Item ids are permanent. Every checklist file must be listed in `site/data/checklists/index.json`.
-- **Repair shape = tracker's `/api/sync/upload` contract** plus `technicianName`. Notes (2000) and issue detail (280) match the tracker; serial, ticket ref and technician are 32 here, tighter than the tracker's 64/64/60 so every saved form still imports. Reading what was already saved (`normalizeRepair(r, { legacy: true })` in `store.js` and `readFormText`) accepts the older limits. If the tracker's rules change, change `site/js/model.js` too.
+- **Repair shape = tracker's `/api/sync/upload` contract** plus `technicianName`. Limits and text rules match the tracker (notes 2000, issue detail 280, serial/ticket/technician 32; its rules are in `web/public/js/text-rules.js` and `portable/text.go`), so change both repos together. Reading what was already saved (`normalizeRepair(r, { legacy: true })` in `store.js` and `readFormText`) accepts the older limits. If the tracker's rules change, change `site/js/model.js` too.
 - **Saved form format** is versioned (`FORM_FORMAT_VERSION` in `form-file.js`); bump it for incompatible changes and keep reading older versions.
 
 ## Security defaults (keep them)
