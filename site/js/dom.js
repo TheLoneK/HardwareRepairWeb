@@ -136,6 +136,63 @@ export function field(label, input, hint) {
   return h('label', { class: 'field' }, h('span', {}, label, hint ? h('span', { class: 'field-hint' }, ` ${hint}`) : null), input);
 }
 
+// Cuts text to at most `max` UTF-16 units (what maxLength counts) without splitting an emoji.
+export function cutTo(text, max) {
+  let out = '';
+  for (const c of text) {
+    if (out.length + c.length > max) break;
+    out += c;
+  }
+  return out;
+}
+
+function insertText(input, text) {
+  // execCommand keeps the paste on the undo stack; setRangeText is the fallback.
+  if (document.queryCommandSupported?.('insertText') && document.execCommand('insertText', false, text)) return;
+  input.setRangeText(text, input.selectionStart ?? input.value.length, input.selectionEnd ?? input.value.length, 'end');
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+}
+
+// Holds a text box to its limit and character rules while people type or paste. Characters the
+// field doesn't take (see the clean* functions in model.js) are dropped on the spot, and a paste
+// that is too long is cut with a message instead of silently. Call it before adding other
+// "input" listeners, so they see the cleaned text.
+export function guardInput(input, { max, clean }) {
+  input.maxLength = max;
+  const LEFT_OUT = 'Some characters (like emoji, symbols or hidden characters) can’t go in this box and were left out.';
+  // True when cleaning removed something other than spacing and line breaks.
+  const lostChars = (before, after) => before.normalize('NFC').replace(/\s+/g, '').length > after.replace(/\s+/g, '').length;
+  input.addEventListener('paste', (e) => {
+    const raw = e.clipboardData?.getData('text/plain');
+    if (raw === undefined) return;
+    e.preventDefault();
+    let text = clean(raw);
+    const notes = lostChars(raw, text) ? [LEFT_OUT] : [];
+    const selected = (input.selectionEnd ?? 0) - (input.selectionStart ?? 0);
+    const room = Math.max(0, max - (input.value.length - selected));
+    if (text.length > room) {
+      text = cutTo(text, room);
+      notes.unshift(`That was too long. This box holds ${max} characters, so only the first part was pasted.`);
+    }
+    if (notes.length) toast(notes.join(' '), { error: true });
+    if (text) insertText(input, text);
+  });
+  input.addEventListener('input', () => {
+    const v = input.value;
+    const cleaned = clean(v);
+    if (cleaned === v) return;
+    if (lostChars(v, cleaned)) toast(LEFT_OUT, { error: true });
+    const caret = clean(v.slice(0, input.selectionEnd ?? v.length)).length;
+    input.value = cleaned;
+    try {
+      input.setSelectionRange(caret, caret);
+    } catch {
+      /* some input types have no caret */
+    }
+  });
+  return input;
+}
+
 export function charCounter(input, max) {
   const el = h('div', { class: 'counter' });
   const update = () => {

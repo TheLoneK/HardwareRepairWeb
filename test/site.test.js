@@ -54,3 +54,16 @@ test('local server cannot be walked out of site/', () => {
   assert.equal(resolveInside(root, '/%00'), null);
   assert.equal(resolveInside(root, '/%E0%A4%A'), null);
 });
+
+test('every text box goes through guardInput (limits and character rules)', () => {
+  for (const f of jsFiles(path.join(ROOT, 'js', 'views'))) {
+    const lines = fs.readFileSync(f, 'utf8').split('\n');
+    lines.forEach((line, i) => {
+      const where = `${path.relative(ROOT, f)}:${i + 1}`;
+      const textBox = /h\('textarea'/.test(line) || (/h\('input'/.test(line) && !/type: '(file|datetime-local|checkbox|radio)'/.test(line));
+      if (textBox) assert.match(line, /guardInput\(/, `${where} adds a text box without guardInput`);
+      if (/secretInput\(/.test(line) && !/import/.test(line)) assert.match(lines[i + 1] ?? '', /guardInput\(/, `${where} adds a private field without guardInput`);
+      assert.equal(/maxLength:/.test(line), false, `${where} sets maxLength directly; use guardInput`);
+    });
+  }
+});

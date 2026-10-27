@@ -1,6 +1,6 @@
 // Repairs in progress, kept in this browser only (localStorage) until the form is saved to a
 // folder. Nothing here is ever sent anywhere. Every record is re-validated when read back.
-import { LIMITS, normalizeRepair } from './model.js';
+import { LIMITS, cleanPersonName, normalizeRepair } from './model.js';
 
 const REPAIRS_KEY = 'hrw.repairs.v1';
 const TECH_KEY = 'hrw.technician';
@@ -15,7 +15,7 @@ function readAll() {
   const out = {};
   for (const [id, r] of Object.entries(raw && typeof raw === 'object' ? raw : {})) {
     try {
-      const clean = normalizeRepair(r);
+      const clean = normalizeRepair(r, { legacy: true }); // may predate the current limits
       // Local-only bookkeeping: when and where the form was last saved.
       if (typeof r.savedAt === 'string') clean.savedAt = r.savedAt;
       if (typeof r.savedVersion === 'number') clean.savedVersion = r.savedVersion;
@@ -69,9 +69,20 @@ export function deleteRepair(id) {
   return writeAll(all);
 }
 
+// The remembered technician name, cleaned and cut to the limit (by whole characters, so an
+// older, longer name never ends in half a character).
+function fitName(name) {
+  let out = '';
+  for (const c of cleanPersonName(name)) {
+    if (out.length + c.length > LIMITS.technicianMaxLength) break;
+    out += c;
+  }
+  return out.trim();
+}
+
 export function getTechnician() {
   try {
-    return (localStorage.getItem(TECH_KEY) || '').slice(0, LIMITS.technicianMaxLength);
+    return fitName(localStorage.getItem(TECH_KEY));
   } catch {
     return '';
   }
@@ -79,7 +90,8 @@ export function getTechnician() {
 
 export function setTechnician(name) {
   try {
-    if (name) localStorage.setItem(TECH_KEY, name.slice(0, LIMITS.technicianMaxLength));
+    const clean = fitName(name);
+    if (clean) localStorage.setItem(TECH_KEY, clean);
     else localStorage.removeItem(TECH_KEY);
   } catch {
     /* not remembered */
