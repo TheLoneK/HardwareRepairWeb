@@ -4,8 +4,8 @@
 // A repair has the same shape as HardwareRepairTracker's /api/sync/upload contract, plus
 // technicianName (there are no accounts here), so saved forms can be imported there later.
 
-// Notes and issue detail match the tracker. The short one-line fields are tighter here (the
-// tracker allows 64 / 64 / 60), so every form this site saves still imports there.
+// Same limits and text rules as HardwareRepairTracker (web/public/js/text-rules.js and
+// portable/text.go there); change them together. Short one-line fields are 32.
 export const LIMITS = Object.freeze({
   notesMaxLength: 2000,
   itemDetailMaxLength: 280,
